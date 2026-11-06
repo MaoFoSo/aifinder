@@ -3,250 +3,305 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI-FINDER DOS v3.0</title>
+<title>KI-Quartett · AI-Finder v3.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --green:    #00ff41;
-    --green-dim:#00aa28;
-    --green-dk: #006616;
-    --green-xdk:#003308;
-    --bg:       #080808;
-    --amber:    #ffaa00;
-    --yellow:   #ffff00;
-    --red:      #ff4444;
-    --gold:     #ffd700;
-    --silver:   #c0c0c0;
-    --bronze:   #cd7f32;
+    --felt:      #1d5a38;
+    --felt-dk:   #0c2b1a;
+    --paper:     #fbf6ea;
+    --paper-dk:  #efe5cf;
+    --ink:       #1d1a16;
+    --ink-soft:  #5c554a;
+    --gold:      #e2b23a;
+    --gold-dk:   #a87c16;
+    --back:      #8e1f2b;
+    --back-dk:   #5e1019;
+    --joker:     #c62f2f;
+    --cream:     #f4ead2;
+    --step:      min(96px, 9vw);
+    --card-w:    250px;
+    --card-h:    370px;
   }
+
+  html { -webkit-text-size-adjust: 100%; }
 
   body {
-    background: #000;
-    font-family: 'Share Tech Mono', 'Courier New', Courier, monospace;
-    font-size: 13px;
-    color: var(--green);
     min-height: 100vh;
+    font-family: 'Barlow', system-ui, sans-serif;
+    color: var(--cream);
+    background:
+      radial-gradient(ellipse at 50% 30%, rgba(255,255,255,.07), transparent 60%),
+      radial-gradient(ellipse at center, var(--felt) 0%, var(--felt-dk) 100%);
+    background-color: var(--felt-dk);
+    background-attachment: fixed;
     overflow-x: hidden;
   }
-
-  /* CRT scanlines */
+  /* Filz-Struktur */
   body::before {
-    content: '';
-    position: fixed; inset: 0;
-    background: repeating-linear-gradient(
-      0deg, transparent, transparent 2px,
-      rgba(0,0,0,0.09) 2px, rgba(0,0,0,0.09) 4px
-    );
-    pointer-events: none;
-    z-index: 9999;
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+      repeating-radial-gradient(circle at 17% 32%, rgba(0,0,0,.05) 0 1px, transparent 1px 3px),
+      repeating-radial-gradient(circle at 71% 64%, rgba(255,255,255,.025) 0 1px, transparent 1px 4px);
   }
 
-  /* CRT vignette */
-  body::after {
-    content: '';
-    position: fixed; inset: 0;
-    background: radial-gradient(ellipse at center,
-      rgba(0,255,65,0.02) 0%, rgba(0,0,0,0.45) 100%);
-    pointer-events: none;
-    z-index: 9998;
+  #root { position: relative; z-index: 1; max-width: 1040px; margin: 0 auto; padding: 20px 16px 28px; min-height: 100vh; display: flex; flex-direction: column; }
+  #app  { flex: 1; }
+
+  /* ── KOPF ── */
+  .masthead { text-align: center; margin: 6px 0 22px; }
+  .masthead h1 {
+    font-family: 'Bungee', sans-serif; font-weight: 400;
+    font-size: clamp(30px, 7vw, 54px); line-height: 1; letter-spacing: 1px;
+    color: var(--gold);
+    text-shadow: 0 2px 0 var(--gold-dk), 0 4px 0 rgba(0,0,0,.35);
+  }
+  .masthead .sub {
+    font-family: 'Barlow Condensed', sans-serif; font-weight: 600;
+    text-transform: uppercase; letter-spacing: 4px; font-size: 13px;
+    color: rgba(244,234,210,.75); margin-top: 8px;
+  }
+  .masthead .sub b { color: var(--gold); font-weight: 700; }
+
+  /* ── KARTENRÜCKSEITE (gemeinsam) ── */
+  .card-back {
+    background:
+      radial-gradient(circle at center, var(--back) 0 26%, transparent 27%),
+      repeating-linear-gradient(45deg, var(--back) 0 8px, var(--back-dk) 8px 10px),
+      repeating-linear-gradient(-45deg, transparent 0 8px, rgba(0,0,0,.25) 8px 10px);
+    border: 8px solid var(--paper);
+    border-radius: 16px;
+    box-shadow: 0 10px 24px rgba(0,0,0,.45);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .card-back .emblem {
+    font-family: 'Bungee', sans-serif; color: var(--gold);
+    font-size: 30px; border: 3px solid var(--gold); border-radius: 50%;
+    width: 86px; height: 86px; display: flex; align-items: center; justify-content: center;
+    background: var(--back-dk);
   }
 
-  #root {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 16px;
-    min-height: 100vh;
-    background: var(--bg);
-  }
+  /* ── START: MISCHEN & AUSTEILEN ── */
+  #boot { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 72vh; cursor: pointer; }
+  .shuffle { position: relative; width: 150px; height: 220px; margin-top: 36px; }
+  .shuffle .card-back { position: absolute; inset: 0; border-width: 6px; }
+  .shuffle .card-back:nth-child(1) { animation: deal1 1.5s ease-in-out forwards; }
+  .shuffle .card-back:nth-child(2) { animation: deal2 1.5s ease-in-out forwards; }
+  .shuffle .card-back:nth-child(3) { animation: deal3 1.5s ease-in-out forwards; }
+  .shuffle .card-back:nth-child(4) { animation: deal4 1.5s ease-in-out forwards; }
+  .shuffle .card-back:nth-child(5) { animation: deal5 1.5s ease-in-out forwards; }
+  @keyframes deal1 { 0%{transform:none} 30%{transform:translateX(-60px) rotate(-8deg)} 55%{transform:none} 100%{transform:translateX(-180px) rotate(-18deg)} }
+  @keyframes deal2 { 0%{transform:none} 30%{transform:translateX(60px) rotate(8deg)}   55%{transform:none} 100%{transform:translateX(-90px) rotate(-9deg) translateY(-12px)} }
+  @keyframes deal3 { 0%{transform:none} 30%{transform:translateX(-40px) rotate(-4deg)} 55%{transform:none} 100%{transform:translateY(-18px)} }
+  @keyframes deal4 { 0%{transform:none} 30%{transform:translateX(40px) rotate(4deg)}   55%{transform:none} 100%{transform:translateX(90px) rotate(9deg) translateY(-12px)} }
+  @keyframes deal5 { 0%{transform:none} 30%{transform:translateX(-20px) rotate(-2deg)} 55%{transform:none} 100%{transform:translateX(180px) rotate(18deg)} }
+  .boot-hint { margin-top: 34px; font-family: 'Barlow Condensed'; letter-spacing: 3px; text-transform: uppercase; font-size: 13px; color: rgba(244,234,210,.6); }
 
-  /* ── ANIMATIONS ── */
-  @keyframes blink    { 50% { opacity: 0; } }
-  @keyframes fadeIn   { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
-  @keyframes typeIn   { from { width:0; } to { width:100%; } }
-  @keyframes glow     { 0%,100%{text-shadow:0 0 4px var(--green);} 50%{text-shadow:0 0 12px var(--green), 0 0 24px var(--green);} }
-
-  .blink  { animation: blink 1s step-end infinite; }
-  .fadeIn { animation: fadeIn 0.25s ease-out; }
-  .glow   { animation: glow 3s ease-in-out infinite; }
-
-  /* ── VERSION BAR ── */
-  #vbar {
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    color: var(--green-dk);
-    border-bottom: 1px solid var(--green-xdk);
-    padding-bottom: 6px;
-    margin-bottom: 12px;
+  /* ── MENÜ: 10 STAPEL ── */
+  .intro { text-align: center; color: rgba(244,234,210,.8); font-size: 15px; margin: -6px auto 22px; max-width: 520px; }
+  .stacks {
+    display: grid; gap: 26px 20px;
+    grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
   }
-
-  /* ── DOS BOX ── */
-  .box {
-    border: 1px solid var(--green);
-    padding: 12px 16px;
-    margin-bottom: 12px;
-    position: relative;
+  .stack {
+    position: relative; cursor: pointer; text-align: left;
+    background: var(--paper); color: var(--ink);
+    border: 0; border-radius: 14px; padding: 0; overflow: hidden;
+    font: inherit; aspect-ratio: 5 / 6.4;
+    display: flex; flex-direction: column;
+    box-shadow:
+      3px 3px 0 -1px var(--paper-dk), 3px 3px 0 0 rgba(0,0,0,.25),
+      6px 6px 0 -1px var(--paper-dk), 6px 6px 0 0 rgba(0,0,0,.25),
+      0 12px 22px rgba(0,0,0,.4);
+    transition: transform .18s ease, box-shadow .18s ease;
+    animation: dealIn .45s cubic-bezier(.2,.9,.3,1.2) both;
   }
-  .box-red   { border-color: var(--red); }
-  .box-title {
-    position: absolute;
-    top: -9px; left: 12px;
-    background: var(--bg);
-    padding: 0 6px;
-    font-size: 11px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    color: var(--green);
-  }
-  .box-title-red { color: var(--red); }
-
-  /* ── ASCII HEADER ── */
-  .ascii {
-    white-space: pre;
-    font-size: 11px;
-    line-height: 1.25;
-    color: var(--green-dim);
-    text-align: center;
-    margin-bottom: 6px;
-  }
-  .subtitle {
-    color: var(--green-dk);
-    font-size: 11px;
-    letter-spacing: 3px;
-    text-align: center;
-    margin-bottom: 2px;
-  }
-
-  /* ── MENU ITEMS ── */
-  .menu-item {
-    display: flex;
-    align-items: center;
-    padding: 5px 10px;
-    cursor: pointer;
-    border: 1px solid transparent;
-    margin-bottom: 2px;
-    transition: background 0.08s;
-    user-select: none;
-  }
-  .menu-item:hover, .menu-item:focus {
-    background: var(--green);
-    color: #000;
+  .stack:hover, .stack:focus-visible {
+    transform: translateY(-8px) rotate(-1.5deg);
     outline: none;
+    box-shadow:
+      3px 3px 0 -1px var(--paper-dk), 3px 3px 0 0 rgba(0,0,0,.25),
+      6px 6px 0 -1px var(--paper-dk), 6px 6px 0 0 rgba(0,0,0,.25),
+      0 22px 30px rgba(0,0,0,.5), 0 0 0 3px var(--gold);
   }
-  .menu-item:hover .num, .menu-item:focus .num { color: #000; }
-  .num { color: var(--yellow); margin-right: 10px; min-width: 28px; }
-  .icon-tag { color: var(--green-dk); margin-right: 8px; }
-  .arrow { margin-left: auto; opacity: .35; }
-
-  /* ── RANK TABLE ── */
-  .rank-table { width: 100%; border-collapse: collapse; }
-  .rank-table th {
-    color: var(--yellow);
-    border-bottom: 1px solid var(--green-dim);
-    padding: 4px 8px;
-    text-align: left;
-    font-size: 11px;
-    letter-spacing: 1px;
-    white-space: nowrap;
+  @keyframes dealIn { from { opacity: 0; transform: translateY(-40px) rotate(-6deg) scale(.9); } to { opacity: 1; transform: none; } }
+  .stack .band {
+    background: var(--hue); color: #fff; padding: 10px 12px 9px;
+    display: flex; justify-content: space-between; align-items: baseline;
+    font-family: 'Barlow Condensed'; font-weight: 700; letter-spacing: 1px;
   }
-  .rank-table td {
-    padding: 5px 8px;
-    border-bottom: 1px solid var(--green-xdk);
-    font-size: 12px;
-    vertical-align: middle;
+  .stack .band .key { font-size: 13px; opacity: .85; }
+  .stack .band .code { font-family: 'Bungee'; font-weight: 400; font-size: 15px; }
+  .stack .mid {
+    flex: 1; display: flex; align-items: center; justify-content: center;
+    background:
+      radial-gradient(circle, rgba(0,0,0,.06) 1px, transparent 1.5px) 0 0 / 7px 7px;
   }
-  .rank-table tr:hover td { background: rgba(0,255,65,0.04); }
-
-  .r1 { color: var(--gold); }
-  .r2 { color: var(--silver); }
-  .r3 { color: var(--bronze); }
-  .r4 { color: var(--green-dim); }
-
-  /* ── SCORE BAR ── */
-  .score-wrap { display:inline-flex; gap:2px; align-items:center; }
-  .sb { width:10px; height:10px; display:inline-block; }
-  .sb-on  { background: var(--green); }
-  .sb-off { background: var(--green-xdk); border:1px solid #005510; }
-
-  /* ── BADGES ── */
-  .badge {
-    display: inline-block;
-    border: 1px solid;
-    padding: 1px 5px;
-    font-size: 10px;
-    margin-left: 6px;
-    vertical-align: middle;
+  .stack .mid .glyph {
+    width: 64px; height: 64px; border-radius: 50%; background: var(--hue); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bungee'; font-size: 20px; box-shadow: inset 0 -4px 0 rgba(0,0,0,.2);
   }
-  .b-top  { color: var(--red);   border-color: var(--red); }
-  .b-free { color: var(--green); border-color: var(--green); }
-  .b-paid { color: var(--amber); border-color: var(--amber); }
+  .stack .label { padding: 10px 12px 4px; font-family: 'Barlow Condensed'; font-weight: 700; font-size: 19px; line-height: 1.1; }
+  .stack .meta  { padding: 0 12px 12px; font-size: 12px; color: var(--ink-soft); }
+  .stack .meta b { color: var(--ink); }
 
-  /* ── BUTTONS ── */
-  .dos-btn {
-    background: transparent;
-    border: 1px solid var(--green);
-    color: var(--green);
-    font-family: inherit;
-    font-size: 12px;
-    padding: 5px 14px;
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: background 0.08s;
-    margin-top: 8px;
+  /* ── ERGEBNIS: TISCH MIT FÄCHER ── */
+  .table-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+  .table-head h2 { font-family: 'Bungee'; font-weight: 400; font-size: clamp(20px, 4vw, 30px); color: var(--gold); text-shadow: 0 2px 0 rgba(0,0,0,.35); }
+  .table-head .tag { font-family: 'Barlow Condensed'; letter-spacing: 3px; text-transform: uppercase; font-size: 13px; color: rgba(244,234,210,.7); }
+
+  .fan { position: relative; height: calc(var(--card-h) + 70px); margin: 14px 0 8px; overflow-x: clip; }
+  .card {
+    position: absolute; left: 50%; top: 18px;
+    width: var(--card-w); height: var(--card-h);
+    margin-left: calc(var(--card-w) / -2);
+    background: none; border: 0; padding: 0; font: inherit; color: inherit; cursor: pointer;
+    perspective: 1400px;
+    transform:
+      translateX(calc(var(--d) * var(--step)))
+      translateY(calc(var(--ad) * 16px))
+      rotate(calc(var(--d) * 5deg))
+      scale(calc(1 - var(--ac) * .07));
+    transform-origin: 50% 120%;
+    z-index: calc(50 - var(--ad));
+    transition: transform .45s cubic-bezier(.2,.8,.25,1), opacity .3s, filter .3s;
   }
-  .dos-btn:hover { background: var(--green); color: #000; }
+  .card.far { opacity: 0; pointer-events: none; }
+  .card:not(.active) { filter: brightness(.82) saturate(.85); }
+  .card:focus-visible { outline: none; }
+  .card:focus-visible .face { box-shadow: 0 0 0 4px var(--gold), 0 14px 30px rgba(0,0,0,.5); }
 
-  /* ── PROMPT ── */
-  .prompt { color: var(--green-dim); font-size: 12px; margin-top: 10px; }
-  .hl { color: var(--yellow); }
-  .dim { color: var(--green-dk); }
+  .card-inner { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .6s cubic-bezier(.3,.9,.3,1); }
+  .card.flipped .card-inner { transform: rotateY(180deg); }
+  .face {
+    position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden;
+    border-radius: 16px; overflow: hidden;
+    background: var(--paper); color: var(--ink);
+    border: 1px solid rgba(0,0,0,.12);
+    box-shadow: 0 14px 30px rgba(0,0,0,.45);
+    display: flex; flex-direction: column; text-align: left;
+  }
+  .face.back { transform: rotateY(180deg); }
 
-  /* ── FOOTER ── */
+  /* Vorderseite */
+  .f-top { background: var(--hue); color: #fff; padding: 10px 14px 0; position: relative; height: 128px; }
+  .f-top::after { /* Druckraster */
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle, rgba(255,255,255,.18) 1px, transparent 1.6px) 0 0 / 6px 6px;
+    pointer-events: none;
+  }
+  .f-id { display: flex; justify-content: space-between; align-items: center; font-family: 'Barlow Condensed'; font-weight: 700; font-size: 15px; letter-spacing: 1px; position: relative; z-index: 1; }
+  .f-id .cid { background: #fff; color: var(--ink); border-radius: 6px; padding: 1px 7px; font-family: 'Bungee'; font-weight: 400; font-size: 14px; }
+  .f-mono {
+    position: absolute; left: 50%; bottom: -34px; transform: translateX(-50%); z-index: 2;
+    width: 76px; height: 76px; border-radius: 50%;
+    background: var(--hue); color: #fff; border: 5px solid var(--paper);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Bungee'; font-size: 21px; box-shadow: 0 4px 10px rgba(0,0,0,.25);
+  }
+  .f-name { margin-top: 40px; text-align: center; font-family: 'Bungee'; font-size: 19px; line-height: 1.1; padding: 0 10px; }
+  .f-stats { margin: 12px 14px 0; border-top: 2px solid var(--ink); }
+  .f-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px dashed rgba(0,0,0,.2); font-family: 'Barlow Condensed'; font-size: 16px; }
+  .f-row span:first-child { color: var(--ink-soft); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 13px; }
+  .f-row b { font-weight: 700; }
+  .meter { width: 82px; height: 9px; background: rgba(0,0,0,.1); border-radius: 5px; overflow: hidden; display: inline-block; vertical-align: middle; margin-right: 6px; }
+  .meter i { display: block; height: 100%; background: var(--hue); }
+  .f-foot { margin-top: auto; padding: 8px 14px 10px; font-size: 11px; color: var(--ink-soft); display: flex; justify-content: space-between; }
+
+  /* Trumpf */
+  .card.trump .face.front { border: 4px solid var(--gold); }
+  .trump-star {
+    position: absolute; top: 46px; right: 10px; z-index: 3;
+    background: var(--gold); color: var(--ink); font-family: 'Bungee'; font-size: 11px;
+    padding: 4px 8px; border-radius: 4px; transform: rotate(8deg);
+    box-shadow: 0 2px 0 var(--gold-dk);
+  }
+  /* Niete (Score 0) */
+  .card.dud .face.front { filter: grayscale(1); }
+  .dud-stamp {
+    position: absolute; top: 46%; left: 50%; transform: translate(-50%,-50%) rotate(-16deg); z-index: 4;
+    border: 4px solid var(--joker); color: var(--joker); font-family: 'Bungee'; font-size: 26px;
+    padding: 2px 12px; border-radius: 8px; background: rgba(251,246,234,.85); letter-spacing: 1px;
+  }
+
+  /* Rückseite: Bewertung */
+  .face.back .b-head { background: var(--hue); color: #fff; padding: 14px; font-family: 'Bungee'; font-size: 17px; }
+  .face.back .b-body { padding: 16px 16px 0; flex: 1; display: flex; flex-direction: column; gap: 12px; }
+  .face.back .b-label { font-family: 'Barlow Condensed'; text-transform: uppercase; letter-spacing: 2px; font-size: 12px; color: var(--ink-soft); font-weight: 700; }
+  .face.back .b-quote { font-family: 'Barlow Condensed'; font-weight: 600; font-size: 24px; line-height: 1.15; }
+  .face.back .b-quote::before { content: '„'; color: var(--hue); }
+  .face.back .b-quote::after  { content: '“'; color: var(--hue); }
+
+  /* Joker / Hinweiskarte */
+  .card.joker .face.front { background: var(--joker); color: #fff; border: 6px solid var(--paper); padding: 18px 16px; justify-content: center; gap: 14px; text-align: center; }
+  .card.joker .j-title { font-family: 'Bungee'; font-size: 26px; }
+  .card.joker .j-icon  { font-size: 44px; line-height: 1; }
+  .card.joker .j-msg   { font-family: 'Barlow Condensed'; font-weight: 600; font-size: 17px; line-height: 1.25; }
+
+  /* Steuerleiste */
+  .controls { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+  .btn {
+    font-family: 'Barlow Condensed'; font-weight: 700; font-size: 16px; letter-spacing: 1px; text-transform: uppercase;
+    background: var(--paper); color: var(--ink); border: 0; border-radius: 999px; padding: 9px 18px; cursor: pointer;
+    box-shadow: 0 3px 0 var(--paper-dk), 0 6px 14px rgba(0,0,0,.3);
+    transition: transform .1s;
+  }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: translateY(1px); box-shadow: 0 1px 0 var(--paper-dk); }
+  .btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+  .btn.ghost { background: transparent; color: var(--cream); box-shadow: inset 0 0 0 2px rgba(244,234,210,.5); }
+  .counter { font-family: 'Bungee'; font-size: 15px; color: var(--gold); min-width: 108px; text-align: center; }
+  .hint { text-align: center; font-size: 13px; color: rgba(244,234,210,.65); margin-top: 12px; }
+
+  /* Fußzeile */
   #footer {
-    margin-top: 16px;
-    border-top: 1px solid var(--green-xdk);
-    padding-top: 6px;
-    display: flex;
-    justify-content: space-between;
-    font-size: 10px;
-    color: #003d0e;
+    margin-top: 30px; padding-top: 12px; border-top: 1px solid rgba(244,234,210,.15);
+    display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap;
+    font-size: 12px; color: rgba(244,234,210,.55);
   }
 
-  /* ── BOOT SCREEN ── */
-  #boot {
-    text-align: center;
-    margin-top: 80px;
+  /* ── HANDY: WISCHBARE KARTENREIHE ── */
+  @media (max-width: 640px) {
+    :root { --card-w: min(78vw, 290px); --card-h: 380px; }
+    .stacks { grid-template-columns: repeat(2, 1fr); gap: 20px 14px; }
+    .stack .label { font-size: 16px; }
+    .stack .mid .glyph { width: 50px; height: 50px; font-size: 16px; }
+    .fan {
+      height: auto; display: flex; gap: 14px;
+      overflow-x: auto; scroll-snap-type: x mandatory;
+      margin: 10px -16px 4px; padding: 10px calc((100vw - var(--card-w)) / 2) 24px;
+      scrollbar-width: none;
+    }
+    .fan::-webkit-scrollbar { display: none; }
+    .card { position: relative; left: auto; top: auto; margin: 0; flex: 0 0 var(--card-w); transform: none !important; scroll-snap-align: center; }
+    .card.far { opacity: 1; pointer-events: auto; }
+    .card:not(.active) { filter: none; }
+    .controls { gap: 10px; }
+    .btn { padding: 8px 16px; }
+    #back-btn { order: 3; flex-basis: 100%; max-width: 260px; }
   }
-  #boot-text { color: var(--green-dim); margin-top: 24px; }
 
-  /* ── INFO ROW ── */
-  .info-row { display: flex; gap: 12px; }
-  .info-row .box { flex: 1; }
-  .info-line { color: var(--green-dim); font-size: 11px; line-height: 1.9; }
-
-  @media (max-width: 600px) {
-    .info-row { flex-direction: column; }
-    .rank-table th:nth-child(4),
-    .rank-table td:nth-child(4) { display: none; }
-    #vbar span:nth-child(2) { display: none; }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   }
 </style>
 </head>
 <body>
 <div id="root">
-  <div id="vbar">
-    <span>AI-FINDER-DOS v3.0 © 2026 ANTHROPIC-INDEPENDENT RESEARCH</span>
-    <span id="vbar-date"></span>
-    <span>STATUS: ONLINE &#9632;</span>
-  </div>
-  <div id="app"></div>
-  <div id="footer">
-    <span>AI-FINDER-DOS – DATEN AUF BASIS UNABHAENGIGER RECHERCHE – STAND NOV 2026</span>
-    <span>PRESS [F5] RELOAD &nbsp;|&nbsp; DOPPELKLICK = WINDOWS-READY</span>
-  </div>
+  <header class="masthead">
+    <h1>KI-QUARTETT</h1>
+    <div class="sub">AI-Finder · <b>Ausgabe Nov 2026</b> · v3.1</div>
+  </header>
+  <main id="app"></main>
+  <footer id="footer">
+    <span>Datenstand November 2026 · Scores = redaktionelle Einschätzung auf Basis unabhängiger Recherche</span>
+    <span>Tasten: 1–0 Stapel · ← → blättern · Enter umdrehen · Esc zurück</span>
+  </footer>
 </div>
 
 <script>
@@ -353,213 +408,245 @@ const WARNINGS = {
   9: { msg:"HINWEIS: CLAUDES VOICE-MODUS IST NOCH SCHWAECHER ALS DIE KONKURRENZ.\nFUER SPRACHASSISTENZ: CHATGPT VOICE ODER GEMINI LIVE EMPFOHLEN." },
 };
 
-// ── HELPERS ──────────────────────────────────────────────────────────────
-function scoreBar(score) {
-  const n = Math.round(score / 10);
-  let html = '<span class="score-wrap">';
-  for (let i = 0; i < 10; i++)
-    html += `<span class="sb ${i < n ? 'sb-on' : 'sb-off'}"></span>`;
-  html += `</span> <span style="font-size:11px;margin-left:4px">${score}</span>`;
-  return html;
-}
+// ── KARTEN-STIL ───────────────────────────────────────────────────────────
+const TOOL_STYLE = [
+  // [Namensanfang, Monogramm, Farbe]
+  ['Claude',     'Cl',  '#c4633f'],
+  ['ChatGPT',    'GPT', '#10855f'],
+  ['Gemini',     'Ge',  '#3f6fd8'],
+  ['Grok',       'Gk',  '#24221f'],
+  ['Perplexity', 'Px',  '#178a99'],
+  ['DeepSeek',   'DS',  '#4a5ad6'],
+  ['Mistral',    'Mi',  '#e2581a'],
+  ['Copilot',    'Co',  '#7a4fcf'],
+  ['Midjourney', 'MJ',  '#6a6460'],
+  ['Qwen',       'Qw',  '#8a49c6'],
+  ['Kimi',       'Ki',  '#d1303d'],
+];
+const STACK_HUES = ['#c4633f','#3f6fd8','#178a99','#d14a8b','#6a6460','#24221f','#e2581a','#10855f','#7a4fcf','#b08a1e'];
+const LETTERS = 'ABCDEFGH';
 
-function badge(tag, price) {
-  if (tag === 'top')  return '<span class="badge b-top">&#9670; TOP</span>';
-  if (tag === 'none') return '';
-  if (price === 'Kostenlos' || price.startsWith('Free'))
-    return '<span class="badge b-free">FREE</span>';
-  return '<span class="badge b-paid">PRO</span>';
+function toolStyle(name) {
+  const s = TOOL_STYLE.find(([k]) => name.startsWith(k));
+  return s ? { mono: s[1], hue: s[2] } : { mono: name.slice(0, 2), hue: '#555' };
 }
+function isFree(price) { return price === 'Kostenlos' || price.startsWith('Free'); }
 
-function rankClass(r) {
-  return ['','r1','r2','r3'][r] || 'r4';
-}
-
-// ── RENDER FUNCTIONS ──────────────────────────────────────────────────────
+// ── RENDER ────────────────────────────────────────────────────────────────
 function renderBoot() {
   return `
-  <div id="boot">
-    <pre class="ascii">
-  ___  ___ ___  ___  _  _ 
- |   \\/ _ \\  _|/ _ \\/ \\/ |
- |  _/ /_\\ \\  / /_\\ \\ \\/ /
- |_| |___/ _/ |___/ |_/|_| 
-          FINDER SYSTEM
-    </pre>
-    <div id="boot-text"><span id="boot-typed"></span><span class="blink">&#9608;</span></div>
+  <div id="boot" role="button" tabindex="0" aria-label="Weiter zum Kartentisch">
+    <div class="shuffle" aria-hidden="true">
+      ${'<div class="card-back"><div class="emblem">KI</div></div>'.repeat(5)}
+    </div>
+    <div class="boot-hint">Karten werden gemischt …</div>
   </div>`;
 }
 
 function renderMenu() {
-  const items = USE_CASES.map((u, i) =>
-    `<div class="menu-item" tabindex="0" data-id="${u.id}" role="button">
-      <span class="num">[${String(u.id).padStart(2,'0')}]</span>
-      <span class="icon-tag">[${u.icon}]</span>
-      <span>${u.label}</span>
-      <span class="arrow">&#9658;</span>
-    </div>`
-  ).join('');
-
+  const stacks = USE_CASES.map((u, i) => {
+    const n = RANKINGS[u.id].length + (WARNINGS[u.id] ? 1 : 0);
+    const top = RANKINGS[u.id][0].tool;
+    const key = u.id === 10 ? '0' : String(u.id);
+    return `
+    <button class="stack" data-id="${u.id}" style="--hue:${STACK_HUES[i]};animation-delay:${i * 45}ms"
+            aria-label="${u.label}: ${n} Karten, Trumpf ${top}">
+      <div class="band"><span class="key">Taste ${key}</span><span class="code">${u.icon}</span></div>
+      <div class="mid"><div class="glyph">${u.id}</div></div>
+      <div class="label">${u.label}</div>
+      <div class="meta">${n} Karten · Trumpf: <b>${top}</b></div>
+    </button>`;
+  }).join('');
   return `
-  <div class="fadeIn">
-    <div style="text-align:center;margin-bottom:14px">
-      <pre class="ascii glow">
-  ___  _  _____ _  _ ___  ___ ___ 
- |   \\/ |/ / __/ \\| |   \\| __| _ \\
- | |) / ' /| _|| .  | |) | _||   /
- |___/|_|\\_\\___|_|\\_|___/|___|_|_\\
-      </pre>
-      <div class="subtitle">&#9472;&#9472; KI-TOOL AUSWAHL & RANKING-SYSTEM &#9472;&#9472;</div>
-      <div class="dim" style="font-size:10px;margin-top:4px">C:\\&gt; SELECT EINSATZZWECK.EXE</div>
-    </div>
+  <p class="intro">Wähle einen Stapel. Jede KI ist eine Karte, die stärkste liegt oben. Dreh die Karten um, um die Bewertung zu lesen.</p>
+  <div class="stacks">${stacks}</div>`;
+}
 
-    <div class="box">
-      <div class="box-title">&#9658; HAUPTMENU &#9472; EINSATZZWECK WAEHLEN</div>
-      <div style="margin-top:8px" id="menu-list">${items}</div>
-      <div class="prompt">
-        C:\\AI-FINDER\\&gt; <span class="hl">KLICK ODER ENTER ZUR AUSWAHL</span>
-        <span class="blink" style="margin-left:6px">&#9608;</span>
+function cardFront(row, uc) {
+  const free = isFree(row.price);
+  return `
+    <div class="face front">
+      <div class="f-top">
+        <div class="f-id"><span class="cid">${uc.id}${LETTERS[row.rank - 1]}</span><span>${uc.icon}</span></div>
+        <div class="f-mono">${toolStyle(row.tool).mono}</div>
       </div>
-    </div>
+      ${row.tag === 'top' ? '<div class="trump-star">★ TRUMPF</div>' : ''}
+      ${row.score === 0 ? '<div class="dud-stamp">NIETE</div>' : ''}
+      <div class="f-name">${row.tool}</div>
+      <div class="f-stats">
+        <div class="f-row"><span>Score</span><b><span class="meter"><i style="width:${row.score}%"></i></span>${row.score}</b></div>
+        <div class="f-row"><span>Platz</span><b>${row.rank}</b></div>
+        <div class="f-row"><span>Preis</span><b>${row.price}</b></div>
+        <div class="f-row"><span>Gratis nutzbar</span><b>${free ? 'Ja' : 'Nein'}</b></div>
+      </div>
+      <div class="f-foot"><span>KI-Quartett 11/26</span><span>umdrehen ↻</span></div>
+    </div>`;
+}
 
-    <div class="info-row">
-      <div class="box" style="flex:1">
-        <div class="box-title">&#9658; SYSTEMINFO</div>
-        <div class="info-line" style="margin-top:8px">
-          MODELLE ERFASST <span class="hl">............. 11</span><br>
-          EINSATZZWECKE <span class="hl">............... 10</span><br>
-          DATENSTAND <span class="hl">........... NOV 2026</span><br>
-          QUELLE <span class="hl">..... UNABH. RECHERCHE</span>
-        </div>
+function cardBack(row, uc) {
+  return `
+    <div class="face back">
+      <div class="b-head">${row.tool}</div>
+      <div class="b-body">
+        <div class="b-label">Bewertung · ${uc.label}</div>
+        <div class="b-quote">${row.notes}</div>
+        <div class="b-label">Score ${row.score}/100 · Platz ${row.rank} von ${RANKINGS[uc.id].length}</div>
       </div>
-      <div class="box" style="flex:1">
-        <div class="box-title">&#9658; LEGENDE</div>
-        <div class="info-line" style="margin-top:8px">
-          <span class="badge b-top">&#9670; TOP</span> &nbsp;= Beste Wahl<br>
-          <span class="badge b-free">FREE</span> &nbsp;&nbsp;= Kostenlos nutzbar<br>
-          <span class="badge b-paid">PRO</span> &nbsp;&nbsp;&nbsp;= Bezahlplan noetig<br>
-          <span style="color:var(--gold)">&#9608;&#9608;&#9608;&#9608;&#9608;</span>&#9619;&#9619;&#9619;&#9619;&#9619; = Score /100
-        </div>
-      </div>
-    </div>
-  </div>`;
+      <div class="f-foot"><span>${uc.id}${LETTERS[row.rank - 1]}</span><span>zurückdrehen ↻</span></div>
+    </div>`;
 }
 
 function renderResult(id) {
-  const uc   = USE_CASES.find(u => u.id === id);
+  const uc = USE_CASES.find(u => u.id === id);
   const rows = RANKINGS[id];
   const warn = WARNINGS[id];
 
-  const tableRows = rows.map(row => {
-    const rc = rankClass(row.rank);
-    const medal = `[${String(row.rank).padStart(2,'0')}]`;
-    return `<tr>
-      <td class="${rc}" style="font-weight:bold">${medal}</td>
-      <td class="${rc}" style="font-weight:bold">${row.tool}${badge(row.tag, row.price)}</td>
-      <td>${scoreBar(row.score)}</td>
-      <td style="color:var(--green-dim);font-size:11px">${row.notes}</td>
-      <td style="text-align:right;color:var(--amber);font-size:11px;white-space:nowrap">${row.price}</td>
-    </tr>`;
-  }).join('');
+  const cards = rows.map(row => {
+    const s = toolStyle(row.tool);
+    const cls = ['card', row.tag === 'top' ? 'trump' : '', row.score === 0 ? 'dud' : ''].join(' ');
+    return `
+    <button class="${cls}" style="--hue:${s.hue}"
+            aria-label="Karte ${uc.id}${LETTERS[row.rank - 1]}: ${row.tool}, Platz ${row.rank}, Score ${row.score}, Preis ${row.price}. Enter zum Umdrehen.">
+      <div class="card-inner">${cardFront(row, uc)}${cardBack(row, uc)}</div>
+    </button>`;
+  });
 
-  const warnBox = warn ? `
-  <div class="box box-red" style="margin-top:0">
-    <div class="box-title box-title-red">&#9658; SYSTEMWARNUNG</div>
-    <div style="color:var(--red);font-size:12px;margin-top:8px;white-space:pre-line">&#9888; ${warn.msg}</div>
-  </div>` : '';
+  if (warn) {
+    const msg = warn.msg.replace(/\n/g, '<br><br>');
+    cards.push(`
+    <button class="card joker" aria-label="Hinweiskarte: ${warn.msg.replace(/\n/g, ' ')}">
+      <div class="card-inner">
+        <div class="face front">
+          <div class="j-icon">⚠</div>
+          <div class="j-title">JOKER</div>
+          <div class="j-msg">${msg}</div>
+        </div>
+      </div>
+    </button>`);
+  }
 
   return `
-  <div class="fadeIn">
-    <div class="box">
-      <div class="box-title">&#9658; ABFRAGE GESTARTET</div>
-      <div style="font-size:11px;color:var(--green-dim);margin-top:6px">
-        C:\\AI-FINDER\\&gt; QUERY.EXE --zweck=<span class="hl">"${uc.label}"</span>
-        <span class="blink"> &#9608;</span>
-      </div>
-      <div class="dim" style="font-size:11px;margin-top:3px">
-        ANALYZING DATABASE... SORTING BY SCORE... DONE. ${rows.length} EINTRAEGE GEFUNDEN.
-      </div>
-    </div>
-
-    <div class="box">
-      <div class="box-title">&#9658; RANKING: ${uc.label.toUpperCase()} [${uc.icon}]</div>
-      <div style="margin-top:12px;overflow-x:auto">
-        <table class="rank-table">
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>TOOL</th>
-              <th>SCORE</th>
-              <th>BEWERTUNG</th>
-              <th style="text-align:right">PREIS</th>
-            </tr>
-          </thead>
-          <tbody>${tableRows}</tbody>
-        </table>
-      </div>
-    </div>
-
-    ${warnBox}
-
-    <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-      <button class="dos-btn" id="back-btn">&#9668; [ESC] ZURUECK ZUM MENU</button>
-      <span class="dim" style="font-size:11px">C:\\AI-FINDER\\&gt; QUERY ABGESCHLOSSEN.</span>
-    </div>
-  </div>`;
+  <div class="table-head">
+    <h2>${uc.label}</h2>
+    <span class="tag">Stapel ${uc.id} · ${uc.icon}</span>
+  </div>
+  <div class="fan" id="fan">${cards.join('')}</div>
+  <div class="controls">
+    <button class="btn ghost" id="back-btn">◄ Zum Tisch</button>
+    <button class="btn" id="prev-btn" aria-label="Vorherige Karte">←</button>
+    <span class="counter" id="counter" aria-live="polite"></span>
+    <button class="btn" id="next-btn" aria-label="Nächste Karte">→</button>
+  </div>
+  <p class="hint">Karte antippen = umdrehen · Pfeile oder Wischen = blättern</p>`;
 }
 
-// ── STATE MACHINE ─────────────────────────────────────────────────────────
-let state = 'boot'; // boot | menu | result
+// ── ZUSTAND ───────────────────────────────────────────────────────────────
+let state = 'boot';   // boot | menu | result
 let selectedId = null;
+let active = 0;
+let bootTimer = null;
+
+const mobileMQ = window.matchMedia('(max-width: 640px)');
+const isMobile = () => mobileMQ.matches;
 
 function setState(newState, id) {
   state = newState;
   selectedId = id || null;
+  active = 0;
   renderApp();
+  window.scrollTo(0, 0);
 }
 
 function renderApp() {
   const app = document.getElementById('app');
-  if (state === 'boot')   { app.innerHTML = renderBoot();   startBoot(); return; }
-  if (state === 'menu')   { app.innerHTML = renderMenu();   bindMenu();  return; }
+  if (state === 'boot')   { app.innerHTML = renderBoot(); startBoot(); return; }
+  if (state === 'menu')   { app.innerHTML = renderMenu(); bindMenu(); return; }
   if (state === 'result') { app.innerHTML = renderResult(selectedId); bindResult(); }
 }
 
+// ── START ─────────────────────────────────────────────────────────────────
+function startBoot() {
+  const go = () => { clearTimeout(bootTimer); if (state === 'boot') setState('menu'); };
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  bootTimer = setTimeout(go, reduced ? 200 : 1900);
+  document.getElementById('boot').addEventListener('click', go);
+}
+
+// ── MENÜ ──────────────────────────────────────────────────────────────────
 function bindMenu() {
-  document.querySelectorAll('.menu-item').forEach(el => {
-    el.addEventListener('click',    () => setState('result', +el.dataset.id));
-    el.addEventListener('keydown', e => { if (e.key==='Enter'||e.key===' ') setState('result', +el.dataset.id); });
+  document.querySelectorAll('.stack').forEach(el =>
+    el.addEventListener('click', () => setState('result', +el.dataset.id)));
+}
+
+// ── FÄCHER ────────────────────────────────────────────────────────────────
+function cardsEl() { return [...document.querySelectorAll('#fan .card')]; }
+
+function layoutFan() {
+  const cards = cardsEl();
+  cards.forEach((c, i) => {
+    const d = i - active, ad = Math.abs(d);
+    c.style.setProperty('--d', d);
+    c.style.setProperty('--ad', ad);
+    c.style.setProperty('--ac', Math.min(ad, 3));
+    c.classList.toggle('active', d === 0);
+    c.classList.toggle('far', ad > 3);
+    c.tabIndex = d === 0 ? 0 : -1;
   });
+  document.getElementById('counter').textContent = `Karte ${active + 1} / ${cards.length}`;
+}
+
+function goTo(i, focus) {
+  const cards = cardsEl();
+  active = Math.max(0, Math.min(cards.length - 1, i));
+  layoutFan();
+  if (isMobile()) cards[active].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  if (focus) cards[active].focus({ preventScroll: true });
 }
 
 function bindResult() {
-  const btn = document.getElementById('back-btn');
-  if (btn) btn.addEventListener('click', () => setState('menu'));
-  document.addEventListener('keydown', escHandler);
+  const fan = document.getElementById('fan');
+  const cards = cardsEl();
+
+  cards.forEach((c, i) => c.addEventListener('click', () => {
+    if (i !== active && !isMobile()) { goTo(i); return; }
+    if (!c.classList.contains('joker')) c.classList.toggle('flipped');
+    active = i; layoutFan();
+  }));
+
+  // Handy: aktive Karte aus Scrollposition ableiten
+  let raf = null;
+  fan.addEventListener('scroll', () => {
+    if (!isMobile()) return;
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      const mid = fan.scrollLeft + fan.clientWidth / 2;
+      let best = 0, dist = Infinity;
+      cards.forEach((c, i) => {
+        const cm = c.offsetLeft + c.offsetWidth / 2;
+        if (Math.abs(cm - mid) < dist) { dist = Math.abs(cm - mid); best = i; }
+      });
+      if (best !== active) { active = best; layoutFan(); }
+    });
+  }, { passive: true });
+
+  document.getElementById('back-btn').addEventListener('click', () => setState('menu'));
+  document.getElementById('prev-btn').addEventListener('click', () => goTo(active - 1));
+  document.getElementById('next-btn').addEventListener('click', () => goTo(active + 1));
+  layoutFan();
 }
 
-function escHandler(e) {
-  if (e.key === 'Escape') { document.removeEventListener('keydown', escHandler); setState('menu'); }
-}
-
-// ── BOOT ANIMATION ────────────────────────────────────────────────────────
-function startBoot() {
-  const text = 'AI-FINDER v3.0 LOADING MODULES...';
-  const el = document.getElementById('boot-typed');
-  let i = 0;
-  const t = setInterval(() => {
-    i++;
-    el.textContent = text.slice(0, i);
-    if (i >= text.length) {
-      clearInterval(t);
-      setTimeout(() => setState('menu'), 450);
-    }
-  }, 38);
-}
-
-// ── INIT ──────────────────────────────────────────────────────────────────
-document.getElementById('vbar-date').textContent =
-  'DATE: ' + new Date().toLocaleDateString('de-DE') + '  TIME: ' + new Date().toLocaleTimeString('de-DE');
+// ── TASTATUR ──────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.altKey || e.ctrlKey || e.metaKey) return;
+  if (state === 'boot' && (e.key === 'Enter' || e.key === ' ' || e.key === 'Escape')) { e.preventDefault(); setState('menu'); return; }
+  if (state === 'menu' && /^[0-9]$/.test(e.key)) { setState('result', e.key === '0' ? 10 : +e.key); return; }
+  if (state === 'result') {
+    if (e.key === 'Escape')     { setState('menu'); return; }
+    if (e.key === 'ArrowRight') { e.preventDefault(); goTo(active + 1, true); return; }
+    if (e.key === 'ArrowLeft')  { e.preventDefault(); goTo(active - 1, true); return; }
+  }
+});
+mobileMQ.addEventListener('change', () => { if (state === 'result') goTo(active); });
 
 renderApp();
 </script>
