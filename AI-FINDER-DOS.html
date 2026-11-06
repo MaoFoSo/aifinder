@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI-FINDER DOS v2.6</title>
+<title>AI-FINDER DOS v3.0</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
 
@@ -238,13 +238,13 @@
 <body>
 <div id="root">
   <div id="vbar">
-    <span>AI-FINDER-DOS v2.6 © 2026 ANTHROPIC-INDEPENDENT RESEARCH</span>
+    <span>AI-FINDER-DOS v3.0 © 2026 ANTHROPIC-INDEPENDENT RESEARCH</span>
     <span id="vbar-date"></span>
     <span>STATUS: ONLINE &#9632;</span>
   </div>
   <div id="app"></div>
   <div id="footer">
-    <span>AI-FINDER-DOS – DATEN AUF BASIS UNABHAENGIGER RECHERCHE – STAND MAI 2026</span>
+    <span>AI-FINDER-DOS – DATEN AUF BASIS UNABHAENGIGER RECHERCHE – STAND NOV 2026</span>
     <span>PRESS [F5] RELOAD &nbsp;|&nbsp; DOPPELKLICK = WINDOWS-READY</span>
   </div>
 </div>
@@ -266,80 +266,91 @@ const USE_CASES = [
 
 const RANKINGS = {
   1:[
-    {rank:1,tool:"Claude",     score:95,notes:"Praezise, nuanciert, keine Floskeln",    price:"Free/Pro",  tag:"top"},
-    {rank:2,tool:"ChatGPT",    score:85,notes:"Breit, solide, kreativ",                 price:"Free/Plus", tag:"paid"},
-    {rank:3,tool:"Gemini",     score:72,notes:"Gut, neigt zu Ausfuehrlichkeit",         price:"Free/Pro",  tag:"free"},
-    {rank:4,tool:"Perplexity", score:55,notes:"Nicht das Kernfeature",                  price:"Free/Pro",  tag:"paid"},
-    {rank:5,tool:"Grok",       score:50,notes:"Informell, fuer kurze Posts ok",         price:"Free/X",    tag:"free"},
+    {rank:1,tool:"Claude",          score:96,notes:"Opus 5.5: praezise, nuanciert, keine Floskeln",   price:"Free/Pro",  tag:"top"},
+    {rank:2,tool:"ChatGPT",         score:88,notes:"Breit, solide, kreativ",                         price:"Free/Plus", tag:"free"},
+    {rank:3,tool:"Gemini",          score:78,notes:"Gut, stark in Google Docs/Gmail integriert",     price:"Free/Pro",  tag:"free"},
+    {rank:4,tool:"Mistral Le Chat", score:72,notes:"EU-Anbieter, DSGVO-freundlich, stark auf Deutsch",price:"Free/Pro", tag:"free"},
+    {rank:5,tool:"Copilot",         score:68,notes:"In Word/Outlook integriert",                     price:"Free/M365", tag:"free"},
+    {rank:6,tool:"Grok",            score:52,notes:"Informell, fuer kurze Posts ok",                 price:"Free/X",    tag:"free"},
   ],
   2:[
-    {rank:1,tool:"Claude",     score:97,notes:"Claude Code, sauberer Code, Top-Reasoning",price:"Pro",    tag:"top"},
-    {rank:2,tool:"ChatGPT",    score:83,notes:"GPT-5 stark, breite Sprachkenntnis",     price:"Plus",     tag:"paid"},
-    {rank:3,tool:"Gemini",     score:74,notes:"Gut fuer Google/Firebase-Stack",          price:"Free/Pro", tag:"free"},
-    {rank:4,tool:"DeepSeek",   score:71,notes:"Kostenlos, ueberraschend stark",          price:"Free",     tag:"free"},
-    {rank:5,tool:"Grok",       score:50,notes:"Solide, aber kein Coding-Fokus",         price:"Free",     tag:"free"},
+    {rank:1,tool:"Claude",     score:97,notes:"Claude Code + Opus 5.5, Top bei Agenten-Coding",  price:"Pro/Max",  tag:"top"},
+    {rank:2,tool:"ChatGPT",    score:88,notes:"Codex-Agent, sehr breite Sprachkenntnis",         price:"Plus",     tag:"paid"},
+    {rank:3,tool:"Gemini",     score:80,notes:"Riesiger Kontext, gut fuer Google/Firebase",      price:"Free/Pro", tag:"free"},
+    {rank:4,tool:"Kimi",       score:76,notes:"Open-Weight, stark bei Agenten & Frontend",       price:"Free",     tag:"free"},
+    {rank:5,tool:"DeepSeek",   score:75,notes:"V4: kostenlos, Top bei Wettbewerbs-Coding",       price:"Free",     tag:"free"},
+    {rank:6,tool:"Qwen",       score:72,notes:"Open-Weight, solide Coding-Modelle",              price:"Free",     tag:"free"},
+    {rank:7,tool:"Grok",       score:55,notes:"Solide, aber kein Coding-Fokus",                  price:"Free",     tag:"free"},
   ],
   3:[
-    {rank:1,tool:"Perplexity", score:97,notes:"Quellenangaben, Echtzeit-Web",            price:"Free/Pro", tag:"top"},
-    {rank:2,tool:"Gemini",     score:83,notes:"Google-Suche nativ integriert",           price:"Free/Pro", tag:"free"},
-    {rank:3,tool:"ChatGPT",    score:75,notes:"Web-Suche vorhanden, weniger fokussiert", price:"Plus",     tag:"paid"},
-    {rank:4,tool:"Claude",     score:70,notes:"Web-Suche ja, aber nicht Kernfunktion",   price:"Free/Pro", tag:"free"},
-    {rank:5,tool:"Grok",       score:65,notes:"Echtzeit X-Daten, aber eng",              price:"Free",     tag:"free"},
+    {rank:1,tool:"Perplexity", score:96,notes:"Quellenangaben, Echtzeit-Web, Deep Research",     price:"Free/Pro", tag:"top"},
+    {rank:2,tool:"Gemini",     score:86,notes:"Google-Suche nativ, Deep Research",               price:"Free/Pro", tag:"free"},
+    {rank:3,tool:"ChatGPT",    score:84,notes:"Web-Suche + Deep Research, gute Quellen",         price:"Free/Plus",tag:"free"},
+    {rank:4,tool:"Claude",     score:78,notes:"Web-Suche + Research-Modus, gruendlich",          price:"Free/Pro", tag:"free"},
+    {rank:5,tool:"Copilot",    score:70,notes:"Bing-Suche integriert, gratis",                   price:"Free",     tag:"free"},
+    {rank:6,tool:"Grok",       score:64,notes:"Echtzeit X-Daten, aber eng",                      price:"Free",     tag:"free"},
   ],
   4:[
-    {rank:1,tool:"ChatGPT",    score:98,notes:"DALL-E 3 nativ integriert",               price:"Plus",     tag:"top"},
-    {rank:2,tool:"Gemini",     score:82,notes:"Imagen 3, stark bei Fotorealismus",       price:"Pro",      tag:"paid"},
-    {rank:3,tool:"Grok",       score:65,notes:"Aurora-Bildgen in SuperGrok",             price:"SuperGrok",tag:"paid"},
-    {rank:4,tool:"Perplexity", score:50,notes:"Einige Bildgen-Funktionen in Pro",        price:"Pro",      tag:"paid"},
-    {rank:5,tool:"Claude",     score:0, notes:"KEIN Bildgenerator - nur Bildanalyse!",   price:"-",        tag:"free"},
+    {rank:1,tool:"ChatGPT",    score:97,notes:"GPT Image: Top-Qualitaet & Textdarstellung",      price:"Free/Plus",tag:"top"},
+    {rank:2,tool:"Gemini",     score:92,notes:"Nano Banana: realistisch, schnell, guenstig",     price:"Free/Pro", tag:"free"},
+    {rank:3,tool:"Midjourney", score:90,notes:"Bester Kunst- & Kino-Look",                       price:"ab $10/Mo",tag:"paid"},
+    {rank:4,tool:"Grok",       score:70,notes:"Grok Imagine, inkl. Kurzvideos",                  price:"Free/SuperGrok",tag:"free"},
+    {rank:5,tool:"Copilot",    score:66,notes:"Bildgen gratis (OpenAI-Modelle)",                 price:"Free",     tag:"free"},
+    {rank:6,tool:"Claude",     score:0, notes:"KEIN Bildgenerator - nur Bildanalyse!",           price:"-",        tag:"none"},
   ],
   5:[
-    {rank:1,tool:"Claude",     score:98,notes:"1M Token Kontext, zuverlaessig",          price:"Free/Pro", tag:"top"},
-    {rank:2,tool:"Gemini",     score:88,notes:"Sehr grosses Kontextfenster",             price:"Pro",      tag:"paid"},
-    {rank:3,tool:"ChatGPT",    score:78,notes:"128K Tokens, gut fuer mittlere Docs",     price:"Plus",     tag:"paid"},
-    {rank:4,tool:"Perplexity", score:70,notes:"PDF-Upload in Pro moeglich",              price:"Pro",      tag:"paid"},
-    {rank:5,tool:"Grok",       score:50,notes:"Eingeschraenkte Dokumentenunterstuetzung",price:"SuperGrok",tag:"paid"},
+    {rank:1,tool:"Claude",     score:97,notes:"1M Token Kontext, zuverlaessig, praezise Zitate", price:"Free/Pro", tag:"top"},
+    {rank:2,tool:"Gemini",     score:92,notes:"Sehr grosses Kontextfenster, NotebookLM",         price:"Free/Pro", tag:"free"},
+    {rank:3,tool:"ChatGPT",    score:84,notes:"Groesserer Kontext, gut fuer die meisten Docs",   price:"Plus",     tag:"paid"},
+    {rank:4,tool:"Kimi",       score:74,notes:"Langer Kontext, gratis",                          price:"Free",     tag:"free"},
+    {rank:5,tool:"Perplexity", score:70,notes:"PDF-Upload, eher fuer Suche",                     price:"Pro",      tag:"paid"},
+    {rank:6,tool:"Grok",       score:55,notes:"Eingeschraenkte Dokumentenunterstuetzung",        price:"SuperGrok",tag:"paid"},
   ],
   6:[
-    {rank:1,tool:"Grok",       score:97,notes:"Echtzeit X/Twitter-Zugang, Live-Trends",  price:"Free",     tag:"top"},
-    {rank:2,tool:"Perplexity", score:78,notes:"Aktuelle Web-News in Echtzeit",            price:"Free/Pro", tag:"free"},
-    {rank:3,tool:"ChatGPT",    score:72,notes:"Content-Erstellung, GPTs fuer Social",     price:"Plus",     tag:"paid"},
-    {rank:4,tool:"Claude",     score:65,notes:"Guter Content, kein Social-Feed",          price:"Free/Pro", tag:"free"},
-    {rank:5,tool:"Gemini",     score:60,notes:"Google Trends-Integration moeglich",       price:"Free",     tag:"free"},
+    {rank:1,tool:"Grok",       score:96,notes:"Echtzeit X/Twitter-Zugang, Live-Trends",          price:"Free",     tag:"top"},
+    {rank:2,tool:"Perplexity", score:80,notes:"Aktuelle Web-News in Echtzeit",                   price:"Free/Pro", tag:"free"},
+    {rank:3,tool:"ChatGPT",    score:76,notes:"Content + Bilder fuer Posts aus einer Hand",      price:"Free/Plus",tag:"free"},
+    {rank:4,tool:"Gemini",     score:70,notes:"Google Trends & YouTube-Bezug",                   price:"Free",     tag:"free"},
+    {rank:5,tool:"Claude",     score:65,notes:"Guter Content, kein Social-Feed",                 price:"Free/Pro", tag:"free"},
   ],
   7:[
-    {rank:1,tool:"ChatGPT",    score:92,notes:"Kreativ, verspielt, breites Wissen",       price:"Free/Plus",tag:"top"},
-    {rank:2,tool:"Claude",     score:88,notes:"Nuanciert, hohe Ideen-Qualitaet",          price:"Free/Pro", tag:"free"},
-    {rank:3,tool:"Gemini",     score:72,notes:"Solide, multimodal hilfreich",             price:"Free/Pro", tag:"free"},
-    {rank:4,tool:"Grok",       score:68,notes:"Unkonventionell, manchmal frech",          price:"Free",     tag:"free"},
-    {rank:5,tool:"Perplexity", score:40,notes:"Kein Fokus auf Kreativaufgaben",           price:"Free",     tag:"free"},
+    {rank:1,tool:"ChatGPT",    score:92,notes:"Kreativ, verspielt, breites Wissen",              price:"Free/Plus",tag:"top"},
+    {rank:2,tool:"Claude",     score:90,notes:"Nuanciert, hohe Ideen-Qualitaet",                 price:"Free/Pro", tag:"free"},
+    {rank:3,tool:"Gemini",     score:78,notes:"Solide, multimodal hilfreich",                    price:"Free/Pro", tag:"free"},
+    {rank:4,tool:"Grok",       score:68,notes:"Unkonventionell, manchmal frech",                 price:"Free",     tag:"free"},
+    {rank:5,tool:"Mistral Le Chat",score:64,notes:"Schnell, gute Ideen-Listen",                  price:"Free",     tag:"free"},
+    {rank:6,tool:"Perplexity", score:40,notes:"Kein Fokus auf Kreativaufgaben",                  price:"Free",     tag:"free"},
   ],
   8:[
-    {rank:1,tool:"Claude",     score:94,notes:"Nuancen, Fachsprache, langer Kontext",     price:"Free/Pro", tag:"top"},
-    {rank:2,tool:"ChatGPT",    score:90,notes:"Breit, viele Sprachpaare",                 price:"Free/Plus",tag:"free"},
-    {rank:3,tool:"Gemini",     score:85,notes:"Google Translate-Backbone",                price:"Free",     tag:"free"},
-    {rank:4,tool:"DeepSeek",   score:75,notes:"Stark bei asiatischen Sprachen",           price:"Free",     tag:"free"},
-    {rank:5,tool:"Perplexity", score:65,notes:"Uebersetzt, aber nicht der Fokus",         price:"Free",     tag:"free"},
+    {rank:1,tool:"Claude",          score:94,notes:"Nuancen, Fachsprache, langer Kontext",       price:"Free/Pro", tag:"top"},
+    {rank:2,tool:"ChatGPT",         score:91,notes:"Breit, viele Sprachpaare",                   price:"Free/Plus",tag:"free"},
+    {rank:3,tool:"Gemini",          score:88,notes:"Google Translate-Backbone, 100+ Sprachen",   price:"Free",     tag:"free"},
+    {rank:4,tool:"Mistral Le Chat", score:82,notes:"Stark bei europaeischen Sprachen",           price:"Free",     tag:"free"},
+    {rank:5,tool:"Qwen",            score:78,notes:"Stark bei asiatischen Sprachen",             price:"Free",     tag:"free"},
+    {rank:6,tool:"DeepSeek",        score:75,notes:"Gut bei Chinesisch/Englisch",                price:"Free",     tag:"free"},
   ],
   9:[
-    {rank:1,tool:"ChatGPT",    score:97,notes:"Advanced Voice Mode, sehr natuerlich",     price:"Plus",     tag:"top"},
-    {rank:2,tool:"Gemini",     score:82,notes:"Google Assistant-Integration",             price:"Pro",      tag:"paid"},
-    {rank:3,tool:"Grok",       score:62,notes:"Voice in App verfuegbar",                  price:"Free",     tag:"free"},
-    {rank:4,tool:"Claude",     score:35,notes:"Deutlich schwaecher als Konkurrenz",       price:"-",        tag:"free"},
-    {rank:5,tool:"Perplexity", score:30,notes:"Kein nativer Voice-Fokus",                 price:"-",        tag:"free"},
+    {rank:1,tool:"ChatGPT",    score:97,notes:"Sehr natuerlicher Voice-Modus, Unterbrechen ok",  price:"Free/Plus",tag:"top"},
+    {rank:2,tool:"Gemini",     score:90,notes:"Gemini Live mit Kamera & Bildschirm, 90+ Sprachen",price:"Free",    tag:"free"},
+    {rank:3,tool:"Grok",       score:68,notes:"Voice in App verfuegbar",                         price:"Free",     tag:"free"},
+    {rank:4,tool:"Copilot",    score:62,notes:"Einfacher Gratis-Voice-Modus",                    price:"Free",     tag:"free"},
+    {rank:5,tool:"Claude",     score:55,notes:"Voice in Apps, starkes Modell, aber traeger",     price:"Free/Pro", tag:"free"},
+    {rank:6,tool:"Perplexity", score:40,notes:"Voice-Suche, kein Gespraechsfokus",               price:"Free",     tag:"free"},
   ],
   10:[
-    {rank:1,tool:"Perplexity Pro", score:98,notes:"5 Modelle (Claude+GPT+Gemini+Grok) fuer ~$17/Mo",price:"$17/Mo",     tag:"top"},
-    {rank:2,tool:"Claude Free",    score:82,notes:"Stark, kein Abo noetig",                          price:"Kostenlos",  tag:"free"},
-    {rank:3,tool:"DeepSeek",       score:80,notes:"Kostenlos, starkes Reasoning & Coding",           price:"Kostenlos",  tag:"free"},
-    {rank:4,tool:"Perplexity Free",score:72,notes:"5 Pro-Suchen/Tag gratis mit Quellen",             price:"Kostenlos",  tag:"free"},
-    {rank:5,tool:"Grok Free",      score:60,notes:"Basismodell gratis auf X.com",                    price:"Kostenlos",  tag:"free"},
+    {rank:1,tool:"Perplexity Pro", score:95,notes:"GPT, Claude, Gemini & mehr in einem Abo",     price:"$20/Mo",     tag:"top"},
+    {rank:2,tool:"Claude Free",    score:84,notes:"Stark, kein Abo noetig",                      price:"Kostenlos",  tag:"free"},
+    {rank:3,tool:"DeepSeek",       score:82,notes:"Kostenlos, starkes Reasoning & Coding",       price:"Kostenlos",  tag:"free"},
+    {rank:4,tool:"Gemini Free",    score:80,notes:"Grosszuegiges Gratis-Kontingent inkl. Bildgen",price:"Kostenlos", tag:"free"},
+    {rank:5,tool:"ChatGPT Go",     score:76,notes:"Guenstigstes ChatGPT-Abo, mehr Limits",        price:"$8/Mo",      tag:"paid"},
+    {rank:6,tool:"Mistral Le Chat",score:72,notes:"Gratis, EU-gehostet",                         price:"Kostenlos",  tag:"free"},
+    {rank:7,tool:"Copilot",        score:70,notes:"Gratis, ohne Konto nutzbar",                  price:"Kostenlos",  tag:"free"},
   ],
 };
 
 const WARNINGS = {
-  4: { msg:"WARNUNG: CLAUDE KANN KEINE BILDER GENERIEREN!\nFUER BILDGENERIERUNG: CHATGPT (DALL-E 3) ODER MIDJOURNEY VERWENDEN." },
-  9: { msg:"HINWEIS: CLAUDE HAT SCHWACHEN VOICE-MODUS.\nFUER SPRACHASSISTENZ: CHATGPT ADVANCED VOICE (GPT-5) EMPFOHLEN." },
+  4: { msg:"WARNUNG: CLAUDE KANN KEINE BILDER GENERIEREN!\nFUER BILDGENERIERUNG: CHATGPT (GPT IMAGE), GEMINI (NANO BANANA) ODER MIDJOURNEY VERWENDEN." },
+  9: { msg:"HINWEIS: CLAUDES VOICE-MODUS IST NOCH SCHWAECHER ALS DIE KONKURRENZ.\nFUER SPRACHASSISTENZ: CHATGPT VOICE ODER GEMINI LIVE EMPFOHLEN." },
 };
 
 // ── HELPERS ──────────────────────────────────────────────────────────────
@@ -354,13 +365,14 @@ function scoreBar(score) {
 
 function badge(tag, price) {
   if (tag === 'top')  return '<span class="badge b-top">&#9670; TOP</span>';
-  if (price === 'Kostenlos' || price === 'Free' || price === 'Free/Pro' || price === 'Free/Plus' || price === 'Free/X')
+  if (tag === 'none') return '';
+  if (price === 'Kostenlos' || price.startsWith('Free'))
     return '<span class="badge b-free">FREE</span>';
   return '<span class="badge b-paid">PRO</span>';
 }
 
 function rankClass(r) {
-  return ['','r1','r2','r3','r4','r4'][r] || 'r4';
+  return ['','r1','r2','r3'][r] || 'r4';
 }
 
 // ── RENDER FUNCTIONS ──────────────────────────────────────────────────────
@@ -414,9 +426,9 @@ function renderMenu() {
       <div class="box" style="flex:1">
         <div class="box-title">&#9658; SYSTEMINFO</div>
         <div class="info-line" style="margin-top:8px">
-          MODELLE ERFASST <span class="hl">.............. 6</span><br>
+          MODELLE ERFASST <span class="hl">............. 11</span><br>
           EINSATZZWECKE <span class="hl">............... 10</span><br>
-          DATENSTAND <span class="hl">........... MAI 2026</span><br>
+          DATENSTAND <span class="hl">........... NOV 2026</span><br>
           QUELLE <span class="hl">..... UNABH. RECHERCHE</span>
         </div>
       </div>
@@ -440,7 +452,7 @@ function renderResult(id) {
 
   const tableRows = rows.map(row => {
     const rc = rankClass(row.rank);
-    const medal = `[0${row.rank}]`;
+    const medal = `[${String(row.rank).padStart(2,'0')}]`;
     return `<tr>
       <td class="${rc}" style="font-weight:bold">${medal}</td>
       <td class="${rc}" style="font-weight:bold">${row.tool}${badge(row.tag, row.price)}</td>
@@ -532,7 +544,7 @@ function escHandler(e) {
 
 // ── BOOT ANIMATION ────────────────────────────────────────────────────────
 function startBoot() {
-  const text = 'AI-FINDER v2.6 LOADING MODULES...';
+  const text = 'AI-FINDER v3.0 LOADING MODULES...';
   const el = document.getElementById('boot-typed');
   let i = 0;
   const t = setInterval(() => {
